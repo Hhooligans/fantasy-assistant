@@ -1,0 +1,21 @@
+name: Yahoo Token Exchange
+
+on:
+  workflow_dispatch:
+    inputs:
+      auth_code:
+        description: 'Yahoo Authorization Code'
+        required: true
+
+jobs:
+  exchange:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Exchange Code for Token
+        run: |
+          curl -X POST https://api.login.yahoo.com/oauth2/get_token \
+          -u "${{ secrets.YAHOO_CLIENT_ID }}:${{ secrets.YAHOO_CLIENT_SECRET }}" \
+          -d "grant_type=authorization_code" \
+          -d "redirect_uri=https://localhost" \
+          -d "code=${{ github.event.inputs.auth_code }}"
