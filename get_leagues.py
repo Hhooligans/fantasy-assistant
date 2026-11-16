@@ -1,11 +1,11 @@
 import os
 import requests
-import json
 
 CLIENT_ID = os.environ["YAHOO_CLIENT_ID"]
 CLIENT_SECRET = os.environ["YAHOO_CLIENT_SECRET"]
 REFRESH_TOKEN = os.environ["YAHOO_REFRESH_TOKEN"]
 
+# Get access token
 response = requests.post(
     "https://api.login.yahoo.com/oauth2/get_token",
     auth=(CLIENT_ID, CLIENT_SECRET),
@@ -17,7 +17,19 @@ response = requests.post(
 
 response.raise_for_status()
 
-token_data = response.json()
+access_token = response.json()["access_token"]
 
-print("TOKEN RESPONSE:")
-print(json.dumps(token_data, indent=2))
+headers = {
+    "Authorization": f"Bearer {access_token}",
+    "Accept": "application/json",
+}
+
+# Get current user info first
+r = requests.get(
+    "https://fantasysports.yahooapis.com/fantasy/v2/users;use_login=1",
+    headers=headers,
+)
+
+print("STATUS:", r.status_code)
+print("CONTENT-TYPE:", r.headers.get("content-type"))
+print(r.text)
