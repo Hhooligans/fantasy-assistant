@@ -1,6 +1,5 @@
 import os
 import requests
-import json
 
 response = requests.post(
     "https://api.login.yahoo.com/oauth2/get_token",
@@ -16,12 +15,16 @@ response = requests.post(
 
 response.raise_for_status()
 
-data = response.json()
+access_token = response.json()["access_token"]
 
-safe = {}
+headers = {
+    "Authorization": f"Bearer {access_token}"
+}
 
-for k, v in data.items():
-    if "token" not in k.lower():
-        safe[k] = v
+r = requests.get(
+    "https://fantasysports.yahooapis.com/fantasy/v2/game/nfl",
+    headers=headers,
+)
 
-print(json.dumps(safe, indent=2))
+print("STATUS:", r.status_code)
+print(r.text)
