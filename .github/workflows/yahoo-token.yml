@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Exchange Code for Token
         run: |
-          curl -X POST https://api.login.yahoo.com/oauth2/get_token \
+          curl -s -X POST https://api.login.yahoo.com/oauth2/get_token \
           -u "${{ secrets.YAHOO_CLIENT_ID }}:${{ secrets.YAHOO_CLIENT_SECRET }}" \
           -d "grant_type=authorization_code" \
           -d "redirect_uri=https://localhost" \
